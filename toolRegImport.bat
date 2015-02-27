@@ -1,5 +1,4 @@
 @echo off
-
 reg add HKCR\.apk /ve /t reg_sz /d "" /f
 set WINRAR="C:\Program Files (x86)\WinRAR\WinRAR.exe"
 set tool=apk_Winrar
