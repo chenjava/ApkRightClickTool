@@ -111,7 +111,7 @@ def apkInstall (apkName):
             useDev = selectDir[int(select_num)]
             print "selected device:%s"%useDev            
             command="adb -s %s install -r %s"%(useDev,apkName)
-            print command
+#           print command
             os.system(command)
         else:
             print "select device error"
