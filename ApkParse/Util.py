@@ -10,6 +10,7 @@ Created on 2014-10-20
 import sys
 import os
 import md5
+import re
 
 def convertFilePath(path):
     path = path.replace('(', '\(')
@@ -65,3 +66,78 @@ def getStringMd5(strName):
 def getFileSize (apkFilePath):
     fileSize = os.path.getsize(apkFilePath)
     return int(fileSize)
+
+
+def styleFileCorrect (filename):
+    bCorrect=False
+    fp = file(filename)
+    lines=fp.readlines()
+    newLines=''
+    pattern = '\s+name="(do|if)"'
+    pattern2 = '>@\w+?/(do|if)</item'
+    for line in lines:
+        m = re.search(pattern,line)
+        if m!=None:
+            pos = line.find('name="')
+            newLine = line[:pos+7]+'_'+line[pos+7:]
+            newLines=newLines+newLine
+            bCorrect = True
+        else:
+            m = re.search(pattern2,line)
+            if m!=None:
+                pos = line.find('</item')
+                newLine = line[:pos-1]+'_'+line[pos-1:]
+                newLines=newLines+newLine
+                bCorrect = True
+            else:
+                newLines=newLines+line
+    fp.close()
+    fwp=open(filename,'w')
+    fwp.write(newLines)
+    fwp.close()
+    if bCorrect == True:
+        print "%s include do|if"%filename
+    return bCorrect
+
+
+def fileCorrectValueName (filename):
+    bCorrect=False
+    fp = file(filename)
+    lines=fp.readlines()
+    newLines=''
+    pattern = '\s+name="(do|if)"'
+    for line in lines:
+        m = re.search(pattern,line)
+        if m!=None:
+            pos = line.find('name="')
+            newLine = line[:pos+7]+'_'+line[pos+7:]
+            newLines=newLines+newLine
+            bCorrect = True
+        else:
+            newLines=newLines+line
+    fp.close()
+    fwp=open(filename,'w')
+    fwp.write(newLines)
+    fwp.close()
+    if bCorrect == True:
+        print "%s include do|if"%filename
+    return bCorrect
+
+def correctValueName(resDir):    
+    publicFile = resDir+os.sep+"values"+os.sep+"public.xml"    
+    if fileCorrectValueName(publicFile) == False:
+        print "public.xml not include do|if"
+        return
+    print "public.xml include do|if"
+    list_dirs = os.walk(resDir) 
+    for root, dirs, files in list_dirs:     
+        for f in files: 
+            filename = os.path.join(root, f) 
+            if filename[-4:]=='.xml' and filename!=publicFile:
+                if filename[-10:]=='styles.xml':
+                    styleFileCorrect(filename)
+                else:
+                    fileCorrectValueName(filename)
+
+
+

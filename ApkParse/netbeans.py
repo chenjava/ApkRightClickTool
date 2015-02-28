@@ -8,7 +8,7 @@ import sys
 import zipfile
 import time
 import shutil
- 
+from Util import * 
 
 urlSidList = []
 
@@ -68,14 +68,18 @@ def reverseApk (apkName):
     apkPath = ''
     reversedApkName = ''
     signApkName = ''
+    resPath=''
     if extIndex > 0:
         apkPath = apkName[:extIndex]
+        resPath = apkPath + os.sep + "res"
         reversedApkName = apkName[:extIndex] + '_newReversed.apk'        
         signApkName = apkName[:extIndex] + '_netbeans.apk'        
     libpath = getLibPath()
     print "start unpack apk"
     Command = 'java -jar %s/apktool/apktool.jar  d -d %s -o  %s' % (libpath,apkName,apkPath)    
     os.system(Command)
+    print "start correct value name"
+    correctValueName(resPath)
 #   time.sleep(50)
     print "start pack apk"
     enableDebug(apkPath)

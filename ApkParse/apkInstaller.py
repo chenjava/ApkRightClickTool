@@ -53,8 +53,12 @@ def reTestSignApk (apkName):
 def reBuildApk (apkpath):
     libpath = getLibPath()
     outFile = apkpath+"_pack.apk"
+
+    resPath = apkpath + os.sep + "res"
+    print "start correct value name"
+    correctValueName(resPath)
+
     sigCommand = '%s\\apktool\\apktool.bat b %s -o %s' % (libpath,apkpath,outFile)
-#   print sigCommand
     print "start rebuild apk:%s"%outFile
     os.system(sigCommand)
     if  os.path.exists(outFile)==False:
